@@ -46,11 +46,20 @@ class ViewController: UIViewController {
     
     @objc
     func buttonTapped() {
-        openWebsite(URL(string: "https://en.wikipedia.org/wiki/Bit")!)
+        openWebsite(URL(string: "https://en.wikipedia.org/wiki/Bit")!, inSVC: false)
     }
     
-    func openWebsite(_ url: URL) {
+    
+    func openWebsite(_ url: URL, inSVC: Bool = true) {
         let eventAttribution = UIEventAttribution(sourceIdentifier: 101, destinationURL: url, sourceDescription: "test-event-attribution", purchaser: "test-app")
+        
+        guard inSVC else {
+            UIApplication.shared.open(url,
+                                      options: [.eventAttribution : eventAttribution]) { success in
+                print("Open url in Safari, success: \(success)")
+            }
+            return
+        }
         
         let config = SFSafariViewController.Configuration()
         config.eventAttribution = eventAttribution
@@ -60,4 +69,5 @@ class ViewController: UIViewController {
         present(svc, animated: true)
     }
 }
+
 
